@@ -1,5 +1,5 @@
 '''
-It is an API that allows you to create a file with the extension txt, to read the content of the created file and to modify the content of this file.
+It is an API that allows you to create a file with the extension txt, to read the content of the created file, to modify the content and delete this file.
 Source who helped me to do it : https://www.geeksforgeeks.org/python-introduction-to-web-development-using-flask/ and also the application Postman disponible on https://www.postman.com/qingshenhuihiu/workspace/jupyter-notebook/overview
 '''
 from flask import Flask, request, jsonify
