@@ -14,6 +14,7 @@ https://towardsdatascience.com/how-to-convert-json-into-a-pandas-dataframe-100b2
 https://www.geeksforgeeks.org/how-to-disable-python-warnings/
 https://rollbar.com/blog/python-valueerror/
 https://www.geeksforgeeks.org/how-to-append-a-new-row-to-an-existing-csv-file/
+https://www.geeksforgeeks.org/python-os-path-exists-method/
 '''
 from flask import Flask, request, jsonify
 import os
@@ -53,14 +54,22 @@ def createfilecsv():
            film_list : it's the DataFrame (it's just the materialization of your file with its content)
            return the file csv created
     ''' 
-    data = request.json
-    columns = data['columns']
-    dataset = data['dataset']
     file_name = request.json.get('file_name')
-    film_list = pd.DataFrame(dataset, columns=columns)
-    film_list.to_csv(file_name, index=False, header=True)
+    response = {}
 
-    return jsonify(f'Notification: Your movie list has been successfully created as {file_name}')
+    if os.path.exists(file_name):
+        response['Notification'] = 'You can_t editate the  file anymore ;( '
+
+    else:
+        columns = request.json['columns']
+        dataset = request.json['dataset']
+        film_list = pd.DataFrame(dataset, columns=columns)
+        film_list.to_csv(file_name, index=False, header=True)
+        response['Notification'] = f'Your movie list has been successfully created as {file_name}'
+        
+
+    
+    return jsonify(response)
 
 
 #Requisição para ler um arquivo txt
@@ -214,8 +223,7 @@ def selectrange():
     columns_numeric = request.json.get('columns_numeric')
     response = {}
      
-    try:
-          
+    try:  
         file_reader =pd.read_csv(file_name)
         filters = file_reader.loc[file_reader[columns_numeric] < value_x]
         print(type(filters))
@@ -223,7 +231,7 @@ def selectrange():
         response['Notification'] = lines
 
     except:
-        response['Notification'] = 'You should tcheck the name of your file :( ! or tcheck if you pass one column numeric'
+        response['Notification'] = 'You should tcheck the name of your file or tcheck if you pass the correct column numeric name'
 
     return jsonify(response)
 
